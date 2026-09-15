@@ -1,6 +1,6 @@
 # TalTech Food CLI
 
-Rust rewrite of the original Python TalTech Food CLI by @leemetme.
+Rust rewrite of the original Python TalTech Food CLI by [@leemetme](https://github.com/leemetme).
 Contributions welcome.
 
 ## Usage
