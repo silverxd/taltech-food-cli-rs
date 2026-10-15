@@ -4,9 +4,8 @@ pub mod serialization;
 use crate::constants::{FOOD_URL, PREFERRED_DINERS};
 use crate::serialization::Diners;
 use colored::Colorize;
-use std::collections::HashSet;
-use std::env;
 use reqwest::Error;
+use std::env;
 
 fn get_menu() -> Result<Diners, Error> {
     let food_request = reqwest::blocking::get(FOOD_URL)?;
@@ -55,7 +54,7 @@ fn main() -> Result<(), Error> {
             return Err(e);
         }
     };
-    let selected_diners: HashSet<String> = match args.len() {
+    let selected_diners: Vec<String> = match args.len() {
         1 => PREFERRED_DINERS.iter().map(|&x| x.into()).collect(),
         _ => {
             let keywords: Vec<String> =
@@ -71,10 +70,17 @@ fn main() -> Result<(), Error> {
                 .collect()
         }
     };
-    let menu: Diners = menu
+    let mut menu: Diners = menu
         .into_iter()
         .filter(|x| selected_diners.contains(&x.diner.name))
         .collect();
+
+    menu.sort_by(|a, b| {
+        selected_diners
+            .iter()
+            .position(|p| p == &a.diner.name)
+            .cmp(&selected_diners.iter().position(|p| p == &b.diner.name))
+    });
 
     print_menu(menu);
     Ok(())
