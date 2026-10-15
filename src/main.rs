@@ -6,10 +6,12 @@ use crate::serialization::Diners;
 use colored::Colorize;
 use std::collections::HashSet;
 use std::env;
+use reqwest::Error;
 
-fn get_menu() -> Diners {
-    let food_request = reqwest::blocking::get(FOOD_URL).unwrap();
-    food_request.json().unwrap()
+fn get_menu() -> Result<Diners, Error> {
+    let food_request = reqwest::blocking::get(FOOD_URL)?;
+    let result = food_request.json()?;
+    Ok(result)
 }
 
 fn print_menu(menu: Diners) {
@@ -44,9 +46,15 @@ fn print_menu(menu: Diners) {
     });
 }
 
-fn main() {
+fn main() -> Result<(), Error> {
     let args: Vec<String> = env::args().collect();
-    let menu: Diners = get_menu();
+    let menu: Diners = match get_menu() {
+        Ok(diners) => diners,
+        Err(e) => {
+            println!("Failed to get food info: {}", e);
+            return Err(e);
+        }
+    };
     let selected_diners: HashSet<String> = match args.len() {
         1 => PREFERRED_DINERS.iter().map(|&x| x.into()).collect(),
         _ => {
@@ -69,4 +77,5 @@ fn main() {
         .collect();
 
     print_menu(menu);
+    Ok(())
 }
