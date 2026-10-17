@@ -1,4 +1,4 @@
-pub const FOOD_URL: &str = "https://juno.taltech.ee/food/index.php/default";
+pub const FOOD_URL: &str = "https://booking-api.taltech.ee/v2/food";
 pub const PREFERRED_DINERS: &[&str] = &[
     "Plus Kohvik TalTech SOC",
     "Plus Kohvik TalTech LIB",
